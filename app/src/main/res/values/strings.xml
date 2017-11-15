@@ -1,0 +1,29 @@
+<resources>
+	<string name="app_name">Wechain</string>
+	<string name="prompt_email">Email</string>
+	<string name="prompt_password">Contraseña</string>
+	<string name="action_sign_in">Ingresar o registrar</string>
+	<string name="action_sign_in_short">Ingresar</string>
+	<string name="error_invalid_email">La dirección de correo no es válida</string>
+	<string name="error_invalid_password">La</string>
+	<string name="error_incorrect_password">This password is incorrect</string>
+	<string name="error_field_required">This field is required</string>
+	<string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+	<string name="in_vehicle">En un vehiculo</string>
+	<string name="on_bicycle">En bici</string>
+	<string name="on_foot">De pie</string>
+	<string name="running">Corriendo</string>
+	<string name="still">inmóvil</string>
+	<string name="tilting">Inclinación</string>
+	<string name="unknown">Actividad desconocida</string>
+	<string name="walking">Caminando</string>
+	<string name="unidentifiable_activity">Actividad no identificable: %1$d</string>
+	<string name="detected_activities_title">Actividades detectadas</string>
+	<string name="request_activity_updates">Solicitar actualizaciones</string>
+	<string name="remove_activity_updates">Eliminar actualizaciones</string>
+	<string name="activity_updates_enabled">Actualizaciones de actividad habilitadas</string>
+	<string name="activity_updates_not_enabled">Error al habilitar las actualizaciones de actividad</string>
+	<string name="activity_updates_removed">Actualizaciones de actividad eliminadas</string>
+	<string name="activity_updates_not_removed">Error al eliminar las actualizaciones de actividad</string>
+	<string name="percent">%1$d%%</string>
+</resources>

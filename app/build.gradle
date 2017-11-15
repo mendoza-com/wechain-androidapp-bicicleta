@@ -1,0 +1,76 @@
+apply plugin: "com.android.application"
+apply plugin: "io.fabric"
+apply plugin: "realm-android"
+
+android{
+	compileSdkVersion 27
+	buildToolsVersion "26.0.2"
+	defaultConfig{
+		applicationId "com.streambe.bpn"
+		minSdkVersion 16
+		targetSdkVersion 19
+		versionCode 1
+		versionName "1.0"
+		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+		multiDexEnabled true
+	}
+	signingConfigs{
+		config{
+			storeFile file("../wechain.jks")
+			storePassword "WeChain2017"
+			keyAlias "WeChain"
+			keyPassword "WeChain2017"
+		}
+		debug{
+			storeFile file("../wechain.jks")
+			storePassword "WeChain2017"
+			keyAlias "WeChain"
+			keyPassword "WeChain2017"
+		}
+	}
+	buildTypes{
+		release{
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+		}
+	}
+}
+
+repositories{
+	jcenter()
+	mavenCentral()
+	maven {url "https://maven.fabric.io/public"}
+}
+dependencies{
+	compile fileTree(dir: "libs", include: ["*.jar"])
+	androidTestCompile("com.android.support.test.espresso:espresso-core:2.2.2", {
+		exclude group: "com.android.support", module: "support-annotations"
+	})
+	implementation "com.android.support:appcompat-v7:27.0.0"
+	implementation "com.android.support:design:27.0.0"
+	compile "com.android.support:appcompat-v7:27.0.0"
+	compile "com.android.support:animated-vector-drawable:27.0.0"
+	compile "com.android.support:mediarouter-v7:27.0.0"
+	compile "com.android.support:design:27.0.0"
+	compile "com.android.support:multidex:1.0.2"
+	compile "com.android.support:support-v4:27.0.0"
+	compile "com.android.support:support-v13:27.0.0"
+	compile "com.android.support.constraint:constraint-layout:1.0.2"
+	compile "com.google.firebase:firebase-core:11.6.0"
+	compile "com.google.android.gms:play-services-location:11.6.0"
+	compile "com.google.android.gms:play-services:11.6.0"
+	testCompile "junit:junit:4.12"
+	compile("com.crashlytics.sdk.android:crashlytics:2.7.1@aar"){
+		transitive = true
+	}
+	compile("com.crashlytics.sdk.android:answers:1.3.13@aar"){
+		transitive = true
+	}
+	androidTestCompile "com.google.code.findbugs:jsr305:3.0.2"
+	compile "io.realm:android-adapters:2.0.0"
+	compile "com.squareup.retrofit2:retrofit:2.3.0"
+	compile "com.squareup.retrofit2:converter-gson:2.3.0"
+	compile "com.squareup.okhttp3:logging-interceptor:3.9.0"
+}
+
+apply plugin: "com.google.gms.google-services"
