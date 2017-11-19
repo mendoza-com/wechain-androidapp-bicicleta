@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:paddingBottom="@dimen/activity_vertical_margin"
 	android:paddingLeft="@dimen/activity_horizontal_margin"
 	android:paddingRight="@dimen/activity_horizontal_margin"
@@ -11,37 +11,106 @@
 	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
-		<Button
-			android:id="@+id/request_activity_updates_button"
-			android:layout_width="wrap_content"
+		<LinearLayout
+			android:id="@+id/llGoogle"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentStart="true"
-			android:layout_marginTop="@dimen/narrow_space"
-			android:onClick="requestActivityUpdatesButtonHandler"
-			android:text="@string/request_activity_updates" />
-		<Button
-			android:id="@+id/remove_activity_updates_button"
-			android:layout_width="wrap_content"
+			android:background="@color/grey_100"
+			android:orientation="vertical"
+			android:weightSum="4">
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="3"
+				android:gravity="center_horizontal"
+				android:orientation="vertical">
+				<TextView
+					android:id="@+id/status"
+					style="@style/ThemeOverlay.MyTextDetail"
+					android:text="Sign Out" />
+				<TextView
+					android:id="@+id/detail"
+					style="@style/ThemeOverlay.MyTextDetail"
+					tools:text="Firebase User ID: 123456789abc" />
+			</LinearLayout>
+			<RelativeLayout
+				android:layout_width="fill_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:background="@color/grey_300">
+				<com.google.android.gms.common.SignInButton
+					android:id="@+id/sign_in_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_centerInParent="true"
+					android:visibility="visible"
+					tools:visibility="gone" />
+				<LinearLayout
+					android:id="@+id/sign_out_and_disconnect"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_centerInParent="true"
+					android:orientation="horizontal"
+					android:paddingLeft="16dp"
+					android:paddingRight="16dp"
+					android:visibility="gone"
+					tools:visibility="visible">
+					<Button
+						android:id="@+id/sign_out_button"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Sign Out"
+						android:theme="@style/ThemeOverlay.MyDarkButton" />
+					<Button
+						android:id="@+id/disconnect_button"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Disconnect"
+						android:theme="@style/ThemeOverlay.MyDarkButton" />
+				</LinearLayout>
+			</RelativeLayout>
+		</LinearLayout>
+		<RelativeLayout
+			android:layout_below="@+id/llGoogle"
+			android:id="@+id/rlOnOff"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+			<Button
+				android:id="@+id/request_activity_updates_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentLeft="true"
+				android:layout_alignParentStart="true"
+				android:layout_marginTop="@dimen/narrow_space"
+				android:onClick="requestActivityUpdatesButtonHandler"
+				android:text="@string/request_activity_updates" />
+			<Button
+				android:id="@+id/remove_activity_updates_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentEnd="true"
+				android:layout_alignParentRight="true"
+				android:layout_marginTop="@dimen/narrow_space"
+				android:layout_toEndOf="@id/request_activity_updates_button"
+				android:layout_toRightOf="@id/request_activity_updates_button"
+				android:onClick="removeActivityUpdatesButtonHandler"
+				android:text="@string/remove_activity_updates" />
+		</RelativeLayout>
+		<TextView
+			android:layout_below="@+id/rlOnOff"
+			android:id="@+id/detected_activities_title"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignParentEnd="true"
-			android:layout_alignParentRight="true"
-			android:layout_marginTop="@dimen/narrow_space"
-			android:layout_toEndOf="@id/request_activity_updates_button"
-			android:layout_toRightOf="@id/request_activity_updates_button"
-			android:onClick="removeActivityUpdatesButtonHandler"
-			android:text="@string/remove_activity_updates" />
+			android:layout_marginBottom="@dimen/narrow_space"
+			android:layout_marginTop="@dimen/wide_space"
+			android:text="@string/detected_activities_title"
+			android:textSize="@dimen/headline_text_size" />
+		<ListView
+			android:layout_below="@+id/detected_activities_title"
+			android:id="@+id/detected_activities_listview"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
 	</RelativeLayout>
-	<TextView
-		android:id="@+id/detected_activities_title"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="@dimen/narrow_space"
-		android:layout_marginTop="@dimen/wide_space"
-		android:text="@string/detected_activities_title"
-		android:textSize="@dimen/headline_text_size" />
-	<ListView
-		android:id="@+id/detected_activities_listview"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content" />
-</LinearLayout>
+</ScrollView>

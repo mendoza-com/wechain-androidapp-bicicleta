@@ -23,6 +23,9 @@ public final class Common{
 	private static final String PACKAGE_NAME = "com.google.android.gms.location.activityrecognition";
 	public static final String KEY_ACTIVITY_UPDATES_REQUESTED = PACKAGE_NAME + ".ACTIVITY_UPDATES_REQUESTED";
 	public static final String KEY_DETECTED_ACTIVITIES = PACKAGE_NAME + ".DETECTED_ACTIVITIES";
+	public static final String ID_GOOGLE = "669546340867-3pd5jcvsfgdd23ijl6scc0nsk30e5qog.apps.googleusercontent.com";//Cert
+	//public static final String ID_GOOGLE = "669546340867-t4vf12a2l61691ku5kug9b9i47jdi1mp.apps.googleusercontent.com";//Pc1
+	//public static final String ID_GOOGLE = "669546340867-7m6597u26gbu7chfu0oq176e6u528odp.apps.googleusercontent.com";//Pc2
 	/**
 	 * The desired time between activity detections. Larger values result in fewer activity
 	 * detections while improving battery life. A value of 0 results in activity detections at the
@@ -33,13 +36,13 @@ public final class Common{
 	 * List of DetectedActivity types that we monitor in this sample.
 	 */
 	public static final int[] MONITORED_ACTIVITIES ={
-			DetectedActivity.STILL,
+			/*DetectedActivity.STILL,
 			DetectedActivity.ON_FOOT,
 			DetectedActivity.WALKING,
-			DetectedActivity.RUNNING,
-			DetectedActivity.ON_BICYCLE,
+			DetectedActivity.RUNNING,*/
+			DetectedActivity.ON_BICYCLE/*,
 			DetectedActivity.IN_VEHICLE,
 			DetectedActivity.TILTING,
-			DetectedActivity.UNKNOWN
+			DetectedActivity.UNKNOWN*/
 	};
 }
