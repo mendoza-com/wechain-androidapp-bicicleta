@@ -187,22 +187,6 @@
           }
         },
         {
-          "client_id": "669546340867-t4vf12a2l61691ku5kug9b9i47jdi1mp.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.boa.wechain",
-            "certificate_hash": "b7558e247b48663167eec554e9a912c5ee1f8682"
-          }
-        },
-        {
-          "client_id": "669546340867-7m6597u26gbu7chfu0oq176e6u528odp.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.boa.wechain",
-            "certificate_hash": "622155048b3bfed36e2215515c54f2f65a069dc6"
-          }
-        },
-        {
           "client_id": "669546340867-20id3a7mqv1h9cjl4h75mhpl8u6acunq.apps.googleusercontent.com",
           "client_type": 3
         }

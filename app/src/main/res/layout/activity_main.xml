@@ -31,6 +31,7 @@
 				<TextView
 					android:id="@+id/detail"
 					style="@style/ThemeOverlay.MyTextDetail"
+					android:visibility="gone"
 					tools:text="Firebase User ID: 123456789abc" />
 			</LinearLayout>
 			<RelativeLayout
@@ -85,6 +86,7 @@
 				android:layout_alignParentStart="true"
 				android:layout_marginTop="@dimen/narrow_space"
 				android:onClick="requestActivityUpdatesButtonHandler"
+				android:visibility="gone"
 				android:text="@string/request_activity_updates" />
 			<Button
 				android:id="@+id/remove_activity_updates_button"
@@ -96,6 +98,7 @@
 				android:layout_toEndOf="@id/request_activity_updates_button"
 				android:layout_toRightOf="@id/request_activity_updates_button"
 				android:onClick="removeActivityUpdatesButtonHandler"
+				android:visibility="gone"
 				android:text="@string/remove_activity_updates" />
 		</RelativeLayout>
 		<TextView
@@ -106,6 +109,7 @@
 			android:layout_marginBottom="@dimen/narrow_space"
 			android:layout_marginTop="@dimen/wide_space"
 			android:text="@string/detected_activities_title"
+			android:visibility="gone"
 			android:textSize="@dimen/headline_text_size" />
 		<ListView
 			android:layout_below="@+id/detected_activities_title"

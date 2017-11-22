@@ -26,6 +26,7 @@
 	<string name="activity_updates_removed">Actualizaciones de actividad eliminadas</string>
 	<string name="activity_updates_not_removed">Error al eliminar las actualizaciones de actividad</string>
 	<string name="percent">%1$d%%</string>
-	<string name="google_status_fmt">Google User: %s</string>
+	<string name="google_status_fmt">Hola: %s</string>
 	<string name="firebase_status_fmt">Firebase User: %s</string>
+	<string name="server_client_id">669546340867-3pd5jcvsfgdd23ijl6scc0nsk30e5qog.apps.googleusercontent.com</string>
 </resources>

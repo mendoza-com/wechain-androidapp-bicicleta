@@ -36,7 +36,7 @@
 			android:exported="false" />
 		<meta-data
 			android:name="io.fabric.ApiKey"
-			android:value="7ed045575c7896a4915527a88aa657553143254a" />
+			android:value="4198d3d01972c7e921db1092d114b2a8de4d7dd6" />
 		<meta-data
 			android:name="com.google.firebase.messaging.default_notification_icon"
 			android:resource="@mipmap/ic_launcher" />
