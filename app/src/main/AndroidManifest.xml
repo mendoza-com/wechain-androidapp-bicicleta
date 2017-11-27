@@ -30,9 +30,11 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name="com.boa.wechain.LoginActivity"
+		<activity android:name="com.boa.wechain.activities.LoginActivity"
 			android:screenOrientation="portrait" />
-		<service android:name="com.boa.wechain.DetectedActivitiesIntentService"
+		<activity android:name="com.boa.wechain.activities.WebActivity"
+		          android:screenOrientation="portrait" />
+		<service android:name="com.boa.wechain.utils.DetectedActivitiesIntentService"
 			android:exported="false" />
 		<meta-data
 			android:name="io.fabric.ApiKey"

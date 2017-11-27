@@ -15,7 +15,6 @@
 			android:id="@+id/llGoogle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@color/grey_100"
 			android:orientation="vertical"
 			android:weightSum="4">
 			<LinearLayout
@@ -27,7 +26,8 @@
 				<TextView
 					android:id="@+id/status"
 					style="@style/ThemeOverlay.MyTextDetail"
-					android:text="Sign Out" />
+					android:visibility="gone"
+					android:text="Salir" />
 				<TextView
 					android:id="@+id/detail"
 					style="@style/ThemeOverlay.MyTextDetail"
@@ -61,14 +61,15 @@
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
-						android:text="Sign Out"
+						android:visibility="gone"
+						android:text="Salir"
 						android:theme="@style/ThemeOverlay.MyDarkButton" />
 					<Button
 						android:id="@+id/disconnect_button"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
-						android:text="Disconnect"
+						android:text="Desconectar"
 						android:theme="@style/ThemeOverlay.MyDarkButton" />
 				</LinearLayout>
 			</RelativeLayout>
@@ -111,10 +112,19 @@
 			android:text="@string/detected_activities_title"
 			android:visibility="gone"
 			android:textSize="@dimen/headline_text_size" />
-		<ListView
+		<Button
+			android:layout_marginTop="10dp"
 			android:layout_below="@+id/detected_activities_title"
+			android:id="@+id/web"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Wechain Web"
+			android:theme="@style/ThemeOverlay.MyDarkButton" />
+		<ListView
+			android:layout_below="@+id/web"
 			android:id="@+id/detected_activities_listview"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			android:scrollbars="none" />
 	</RelativeLayout>
 </ScrollView>
