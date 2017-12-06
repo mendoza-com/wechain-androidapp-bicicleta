@@ -44,7 +44,7 @@ public class DetectedActivitiesIntentService extends IntentService{
 			ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
 			PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Common.KEY_DETECTED_ACTIVITIES, Utils.detectedActivitiesToJson(detectedActivities)).apply();
 			// Log each activity.
-			Log.i(TAG, "activities detected");
+			Log.i(TAG, "Actividad detectada");
 			
 			for(DetectedActivity da : detectedActivities){
 				Log.i(TAG, Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%");

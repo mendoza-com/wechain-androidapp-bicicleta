@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	protected void updateDetectedActivitiesList(){
 		try{
 			ArrayList<DetectedActivity> detectedActivities = Utils.detectedActivitiesFromJson(
-					PreferenceManager.getDefaultSharedPreferences(mContext).getString(Common.KEY_DETECTED_ACTIVITIES, ""));
+				PreferenceManager.getDefaultSharedPreferences(mContext).getString(Common.KEY_DETECTED_ACTIVITIES, ""));
 			mAdapter.updateActivities(detectedActivities);
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":updateDetectedActivitiesList - ", e);
@@ -375,7 +375,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				break;
 				
 				case R.id.web:
-					System.out.println("WEB!");
 					startActivity(new Intent(MainActivity.this, WebActivity.class));
 				break;
 			}

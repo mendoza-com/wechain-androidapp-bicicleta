@@ -30,8 +30,6 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name="com.boa.wechain.activities.LoginActivity"
-			android:screenOrientation="portrait" />
 		<activity android:name="com.boa.wechain.activities.WebActivity"
 		          android:screenOrientation="portrait" />
 		<service android:name="com.boa.wechain.utils.DetectedActivitiesIntentService"

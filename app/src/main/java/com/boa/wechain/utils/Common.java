@@ -8,7 +8,7 @@ import com.google.android.gms.location.DetectedActivity;
  */
 public final class Common{
 	//En true desbloquea la impresión de trackers y variables para debug
-	public static final boolean		DEBUG					= false;
+	public static final boolean		DEBUG					= true;
 	public static final String		WEB						= "https://www.wechain.org";
 	//Referencia al diccionario de preferencias para la app actual
 	public static final String		KEY_PREF				= "WechainPref";
@@ -36,8 +36,8 @@ public final class Common{
 	 */
 	public static final int[] MONITORED_ACTIVITIES ={
 			/*DetectedActivity.STILL,
-			DetectedActivity.ON_FOOT,
-			DetectedActivity.WALKING,
+			DetectedActivity.ON_FOOT,*/
+			DetectedActivity.WALKING,/*
 			DetectedActivity.RUNNING,*/
 			DetectedActivity.ON_BICYCLE/*,
 			DetectedActivity.IN_VEHICLE,

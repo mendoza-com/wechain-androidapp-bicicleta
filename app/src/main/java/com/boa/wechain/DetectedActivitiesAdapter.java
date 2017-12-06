@@ -75,6 +75,8 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity>{
 			for(int i = 0; i < Common.MONITORED_ACTIVITIES.length; i++){
 				int confidence = detectedActivitiesMap.containsKey(Common.MONITORED_ACTIVITIES[i]) ? detectedActivitiesMap.get(Common.MONITORED_ACTIVITIES[i]) : 0;
 				tempList.add(new DetectedActivity(Common.MONITORED_ACTIVITIES[i], confidence));
+				System.out.println(Common.MONITORED_ACTIVITIES[i]+" "+confidence+"%");
+				//BICI es 1
 			}
 			
 			// Remove all items.
