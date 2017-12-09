@@ -1,9 +1,11 @@
-package com.boa.wechain.utils;
+package com.boa.utils;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
+import com.boa.services.AppLocationService;
 import com.boa.wechain.WechainApp;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
@@ -48,6 +50,14 @@ public class DetectedActivitiesIntentService extends IntentService{
 			
 			for(DetectedActivity da : detectedActivities){
 				Log.i(TAG, Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%");
+				System.out.println(Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%");
+				Toast.makeText(WechainApp.getContext(), Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", Toast.LENGTH_SHORT).show();
+				
+				//Empezar a medir y tomar la posición cuando el nivel es aceptable
+				if(da.getConfidence() > 15){
+					AppLocationService.getCurrentPosition();
+					//Persistir
+				}
 			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "DetectedActivitiesIntentService:onHandleIntent - ", e);

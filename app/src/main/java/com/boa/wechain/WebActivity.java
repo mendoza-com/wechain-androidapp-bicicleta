@@ -1,4 +1,4 @@
-package com.boa.wechain.activities;
+package com.boa.wechain;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.boa.wechain.R;
-import com.boa.wechain.utils.Common;
-import com.boa.wechain.utils.Utils;
+
+import com.boa.utils.Common;
+import com.boa.utils.Utils;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import java.util.ArrayList;

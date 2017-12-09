@@ -1,4 +1,4 @@
-package com.boa.wechain.utils;
+package com.boa.utils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

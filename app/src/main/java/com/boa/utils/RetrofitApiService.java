@@ -1,4 +1,4 @@
-package com.boa.wechain.utils;
+package com.boa.utils;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

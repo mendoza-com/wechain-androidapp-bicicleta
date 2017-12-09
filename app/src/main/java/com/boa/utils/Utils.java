@@ -1,4 +1,4 @@
-package com.boa.wechain.utils;
+package com.boa.utils;
 
 import android.content.Context;
 import android.content.res.Resources;

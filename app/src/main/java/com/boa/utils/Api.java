@@ -1,4 +1,4 @@
-package com.boa.wechain.utils;
+package com.boa.utils;
 
 import com.boa.wechain.WechainApp;
 import com.google.gson.Gson;

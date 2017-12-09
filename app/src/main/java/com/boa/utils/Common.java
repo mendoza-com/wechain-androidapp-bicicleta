@@ -1,4 +1,4 @@
-package com.boa.wechain.utils;
+package com.boa.utils;
 
 import android.Manifest;
 import com.google.android.gms.location.DetectedActivity;
@@ -17,8 +17,10 @@ public final class Common{
 		Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 	public static final String		PREF_CURRENT_LAT		= "prefCurrentLat";
 	public static final String		PREF_CURRENT_LON		= "prefCurrentLon";
-	public static final double		DEFAULT_LAT				= -34.603857;
-	public static final double		DEFAULT_LON				= -58.381863;
+	public static final String		PREF_SELECTED_LAT		= "prefSelectedLat";
+	public static final String		PREF_SELECTED_LON		= "prefSelectedLon";
+	public static final double		DEFAULT_LAT				= -32.8832979;//Mendoza capital
+	public static final double		DEFAULT_LON				= -68.8760287;
 	//Referencia para saber si hubo o no sesión iniciada
 	public static final String		PREF_SESSION_STARTED	= "prefSessionStarted";
 	private static final String PACKAGE_NAME = "com.google.android.gms.location.activityrecognition";
