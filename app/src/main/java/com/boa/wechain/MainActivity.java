@@ -20,7 +20,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.boa.utils.Api;
 import com.boa.utils.Common;
 import com.boa.utils.DetectedActivitiesIntentService;
@@ -52,17 +51,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener{
 	protected static final String TAG = "MainActivity";
 	private Context mContext;
-	/**
-	 * The entry point for interacting with activity recognition.
-	 */
 	private ActivityRecognitionClient mActivityRecognitionClient;
-	// UI elements.
 	private Button mRequestActivityUpdatesButton;
 	private Button mRemoveActivityUpdatesButton;
-	
-	/**
-	 * Adapter backed by a list of DetectedActivity objects.
-	 */
 	private DetectedActivitiesAdapter mAdapter;
 	private static final int RC_SIGN_IN = 123;
 	private FirebaseAuth mAuth;
@@ -132,12 +123,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	public void init(){
 		try{
 			ListView detectedActivitiesListView = findViewById(R.id.detected_activities_listview);
-			// Enable either the Request Updates button or the Remove Updates button depending on
-			// whether activity updates have been requested.
 			setButtonsEnabledState();
 			ArrayList<DetectedActivity> detectedActivities = Utils.detectedActivitiesFromJson(
-					PreferenceManager.getDefaultSharedPreferences(this).getString(Common.KEY_DETECTED_ACTIVITIES, ""));
-			// Bind the adapter to the ListView responsible for display data for detected activities.
+				PreferenceManager.getDefaultSharedPreferences(this).getString(Common.KEY_DETECTED_ACTIVITIES, ""));
 			mAdapter = new DetectedActivitiesAdapter(this, detectedActivities);
 			detectedActivitiesListView.setAdapter(mAdapter);
 			mActivityRecognitionClient = new ActivityRecognitionClient(this);
@@ -154,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 			updateDetectedActivitiesList();
 			
-			if(mRequestActivityUpdatesButton.isEnabled()){
+			if(mRequestActivityUpdatesButton.isEnabled() && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Common.KEY_ACTIVITY_UPDATES_REQUESTED, false)){
 				mRequestActivityUpdatesButton.performClick();
 			}
 		}catch(Exception e){
@@ -173,11 +161,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 		super.onPause();
 	}
 	
-	/**
-	 * Registers for activity recognition updates using
-	 * {@link ActivityRecognitionClient#requestActivityUpdates(long, PendingIntent)}.
-	 * Registers success and failure callbacks.
-	 */
 	public void requestActivityUpdatesButtonHandler(View view){
 		try{
 			Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(Common.DETECTION_INTERVAL_IN_MILLISECONDS, getActivityDetectionPendingIntent());
@@ -185,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				@Override
 				public void onSuccess(Void result){
 					try{
-						//Toast.makeText(mContext, getString(R.string.activity_updates_enabled), Toast.LENGTH_SHORT).show();
 						setUpdatesRequestedState(true);
 						updateDetectedActivitiesList();
 					}catch(Exception e){
@@ -197,8 +179,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			task.addOnFailureListener(new OnFailureListener(){
 				@Override
 				public void onFailure(@NonNull Exception e){
-					Log.w(TAG, getString(R.string.activity_updates_not_enabled));
-					//Toast.makeText(mContext, getString(R.string.activity_updates_not_enabled), Toast.LENGTH_SHORT).show();
 					setUpdatesRequestedState(false);
 					Utils.logError(WechainApp.getContext(), getLocalClassName()+":requestActivityUpdatesButtonHandler:onFailure - ", e);
 				}
@@ -208,11 +188,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 		}
 	}
 	
-	/**
-	 * Removes activity recognition updates using
-	 * {@link ActivityRecognitionClient#removeActivityUpdates(PendingIntent)}. Registers success and
-	 * failure callbacks.
-	 */
 	public void removeActivityUpdatesButtonHandler(View view){
 		try{
 			Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(getActivityDetectionPendingIntent());
@@ -220,9 +195,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				@Override
 				public void onSuccess(Void result){
 					try{
-						Toast.makeText(mContext, getString(R.string.activity_updates_removed), Toast.LENGTH_SHORT).show();
 						setUpdatesRequestedState(false);
-						// Reset the display.
 						mAdapter.updateActivities(new ArrayList<DetectedActivity>());
 					}catch(Exception e){
 						Utils.logError(WechainApp.getContext(), getLocalClassName()+":removeActivityUpdatesButtonHandler:onSuccess - ", e);
@@ -233,8 +206,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			task.addOnFailureListener(new OnFailureListener(){
 				@Override
 				public void onFailure(@NonNull Exception e){
-					Log.w(TAG, "Failed to enable activity recognition.");
-					Toast.makeText(mContext, getString(R.string.activity_updates_not_removed), Toast.LENGTH_SHORT).show();
 					setUpdatesRequestedState(true);
 					Utils.logError(WechainApp.getContext(), getLocalClassName()+":removeActivityUpdatesButtonHandler:onFailure - ", e);
 				}
@@ -244,21 +215,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 		}
 	}
 	
-	/**
-	 * Gets a PendingIntent to be sent for each activity detection.
-	 */
 	private PendingIntent getActivityDetectionPendingIntent(){
 		Intent intent = new Intent(this, DetectedActivitiesIntentService.class);
-		// We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-		// requestActivityUpdates() and removeActivityUpdates().
 		return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
-	/**
-	 * Ensures that only one button is enabled at any time. The Request Activity Updates button is
-	 * enabled if the user hasn't yet requested activity updates. The Remove Activity Updates button
-	 * is enabled if the user has requested activity updates.
-	 */
 	private void setButtonsEnabledState(){
 		try{
 			if(getUpdatesRequestedState()){
@@ -273,18 +234,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 		}
 	}
 	
-	/**
-	 * Retrieves the boolean from SharedPreferences that tracks whether we are requesting activity
-	 * updates.
-	 */
 	private boolean getUpdatesRequestedState(){
 		return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Common.KEY_ACTIVITY_UPDATES_REQUESTED, false);
 	}
 	
-	/**
-	 * Sets the boolean in SharedPreferences that tracks whether we are requesting activity
-	 * updates.
-	 */
 	private void setUpdatesRequestedState(boolean requesting){
 		try{
 			PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(Common.KEY_ACTIVITY_UPDATES_REQUESTED, requesting).apply();
@@ -294,11 +247,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 		}
 	}
 	
-	/**
-	 * Processes the list of freshly detected activities. Asks the adapter to update its list of
-	 * DetectedActivities with new {@code DetectedActivity} objects reflecting the latest detected
-	 * activities.
-	 */
 	protected void updateDetectedActivitiesList(){
 		try{
 			ArrayList<DetectedActivity> detectedActivities = Utils.detectedActivitiesFromJson(
@@ -417,8 +365,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				IdpResponse response = IdpResponse.fromResultIntent(data);
 				
 				if(resultCode == ResultCodes.OK){
-					// Successfully signed in
 					FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+					
 					if(user != null){
 						System.out.println("user: "+user.toString());
 						System.out.println("displayname: "+user.getDisplayName());
@@ -439,13 +387,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	private void signOut(){
 		try{
 			mAuth.signOut();
-			mGoogleSignInClient.signOut().addOnCompleteListener(this,
-					new OnCompleteListener<Void>(){
-						@Override
-						public void onComplete(@NonNull Task<Void> task){
-							updateUI(null);
-						}
-					});
+			mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>(){
+				@Override
+				public void onComplete(@NonNull Task<Void> task){
+					updateUI(null);
+				}
+			});
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":signOut - ", e);
 		}
@@ -454,13 +401,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	private void revokeAccess(){
 		try{
 			mAuth.signOut();
-			mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
-					new OnCompleteListener<Void>(){
-						@Override
-						public void onComplete(@NonNull Task<Void> task){
-							updateUI(null);
-						}
-					});
+			mGoogleSignInClient.revokeAccess().addOnCompleteListener(this, new OnCompleteListener<Void>(){
+				@Override
+				public void onComplete(@NonNull Task<Void> task){
+					updateUI(null);
+				}
+			});
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":revokeAccess - ", e);
 		}
@@ -486,6 +432,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 					Uri personPhoto = acct.getPhotoUrl();
 					mStatusTextView.setText(getString(R.string.google_status_fmt, personEmail));
 					mStatusTextView.setVisibility(View.VISIBLE);
+					
+					if(Common.DEBUG){
+						System.out.println("personName: "+personName+"\npersonGivenName: "+personGivenName+"\npersonFamilyName: "+personFamilyName+"\npersonEmail: "+personEmail
+							+"\npersonId: "+personId+"\npersonPhoto: "+personPhoto);
+					}
 					
 					if(Utils.isEmpty(PreferenceManager.getDefaultSharedPreferences(this).getString("email", ""))){
 						PreferenceManager.getDefaultSharedPreferences(this).edit().putString("email", personEmail).apply();

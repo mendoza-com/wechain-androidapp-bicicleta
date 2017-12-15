@@ -35,7 +35,7 @@
 					tools:text="Firebase User ID: 123456789abc" />
 			</LinearLayout>
 			<RelativeLayout
-				android:layout_width="fill_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="0dp"
 				android:layout_weight="1"
 				android:background="@color/grey_300">

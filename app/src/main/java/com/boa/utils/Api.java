@@ -3,14 +3,15 @@ package com.boa.utils;
 import com.boa.wechain.WechainApp;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import retrofit2.Callback;
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Created by Boa (David Figueroa dgfigueroa29@gmail.com) on 18 oct 2017.
@@ -20,6 +21,7 @@ public class Api{
 	RetrofitApiService retrofitApiService;
 	public static final String BASE_URL = "https://api.wechain.org/v1/";
 	public static final String REGISTER = "users/email";
+	public int timeout = 50;
 	
 	public static Api getIt(){
 		if(it == null){
@@ -36,9 +38,15 @@ public class Api{
 			if(Common.DEBUG){
 				HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 				interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-				client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+				client = new OkHttpClient.Builder().addInterceptor(interceptor)
+					.connectTimeout(timeout, TimeUnit.SECONDS)
+					.writeTimeout(timeout, TimeUnit.SECONDS)
+					.readTimeout(timeout, TimeUnit.SECONDS).build();
 			}else{
-				client = new OkHttpClient();
+				client = new OkHttpClient.Builder()
+					.connectTimeout(timeout, TimeUnit.SECONDS)
+					.writeTimeout(timeout, TimeUnit.SECONDS)
+					.readTimeout(timeout, TimeUnit.SECONDS).build();
 			}
 			
 			Gson gson = new GsonBuilder().create();

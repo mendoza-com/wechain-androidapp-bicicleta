@@ -2,14 +2,22 @@ package com.boa.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Environment;
 import com.boa.wechain.R;
 import com.boa.wechain.WechainApp;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.DetectedActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -50,6 +58,46 @@ public class Utils{
 				ex.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Escribe la variable convertida a String en un archivo con posibilidad de renombrarlo
+	 * @param string
+	 */
+	public static void writeStringInFile(String string, String fileName){
+		try{
+			if(isEmpty(fileName)){
+				fileName = WechainApp.getContext().getString(R.string.app_name)+"Debug.txt";
+			}
+			
+			File root			= new File(Environment.getExternalStorageDirectory(), WechainApp.getContext().getString(R.string.app_name)+"Debug");
+			root.mkdirs();
+			File gpxfile		= new File(root, fileName);
+			FileWriter writer	= new FileWriter(gpxfile, true);
+			writer.append(System.getProperty("line.separator")).append(getDateTimePhone()).append(": ").append(string);
+			writer.flush();
+			writer.close();
+		}catch(Exception e){
+			logError(WechainApp.getContext(), "Utils:writeStringInFile - Exception:", e);
+		}
+	}
+	
+	/**
+	 * Devuelve la fecha y hora actual del teléfono
+	 *
+	 * @return Fecha y hora en formato "dd/MM/yyyy HH:mm:ss"
+	 */
+	public static String getDateTimePhone(){
+		try{
+			Calendar cal		= new GregorianCalendar();
+			Date date			= cal.getTime();
+			SimpleDateFormat df	= new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+			return df.format(date);
+		}catch(Exception e){
+			logError(WechainApp.getContext(), "Utils:getDateTimePhone - Exception:", e);
+		}
+		
+		return "";
 	}
 	
 	/**

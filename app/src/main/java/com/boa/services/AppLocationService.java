@@ -25,7 +25,7 @@ import java.util.List;
  * Created by Boa (David Figueroa davo.figueroa14@gmail.com) on 15/04/2017.
  */
 public class AppLocationService extends Service implements LocationListener{
-	protected LocationManager locationManager;
+	protected LocationManager	locationManager;
 	public Location				location;
 	public static final long	MIN_DISTANCE_FOR_UPDATE	= 10000;
 	private static final long	MIN_TIME_FOR_UPDATE		= 10000 * 60 * 2;
@@ -76,6 +76,20 @@ public class AppLocationService extends Service implements LocationListener{
 				System.out.println("Auto Current Location Latitude: "+lat+" Longitude: "+lng);
 				System.out.println("Auto Last Location Latitude: "+preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))+
 					" Longitude: "+preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON)));
+				//TODO Quitar al finalizar pruebas
+				Utils.writeStringInFile("Auto Default Location Latitude: "+Common.DEFAULT_LAT+"  Longitude: "+Common.DEFAULT_LON+"\n"+
+					"Auto Current Location Latitude: "+lat+" Longitude: "+lng+"\n"+
+					"Auto Last Location Latitude: "+preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))+
+					" Longitude: "+preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON))+"\nAuto Metros: "+
+					meterDistanceBetweenPoints(Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))),
+						Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON))),
+						Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, String.valueOf(Common.DEFAULT_LAT))),
+						Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, String.valueOf(Common.DEFAULT_LON))))
+					+"\nAuto Distancia: "+distanceBetween(Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))),
+						Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON))),
+						Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, String.valueOf(Common.DEFAULT_LAT))),
+						Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, String.valueOf(Common.DEFAULT_LON))))
+				, "");
 			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "AppLocationService:onLocationChanged - Exception: ", e);
@@ -249,6 +263,19 @@ public class AppLocationService extends Service implements LocationListener{
 				System.out.println("Force Current Location Latitude: "+lat+" Longitude: "+lng);
 				System.out.println("Force Last Location Latitude: "+preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))+
 					" Longitude: "+preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON)));
+				//TODO Quitar al finalizar pruebas
+				Utils.writeStringInFile("Force Default Location Latitude: "+Common.DEFAULT_LAT+"  Longitude: "+Common.DEFAULT_LON+"\n"+
+					"Force Current Location Latitude: "+lat+" Longitude: "+lng+"\n"+
+					"Force Last Location Latitude: "+preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))+
+					" Longitude: "+preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON))+"\nForce Metros: "+
+						meterDistanceBetweenPoints(Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))),
+							Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON))),
+							Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, String.valueOf(Common.DEFAULT_LAT))),
+							Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, String.valueOf(Common.DEFAULT_LON))))
+					+"\nForce Distancia: "+distanceBetween(Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, String.valueOf(Common.DEFAULT_LAT))),
+						Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, String.valueOf(Common.DEFAULT_LON))),
+						Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, String.valueOf(Common.DEFAULT_LAT))),
+						Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, String.valueOf(Common.DEFAULT_LON)))), "");
 			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "AppLocationService:getCurrentPosition - Exception: ", e);

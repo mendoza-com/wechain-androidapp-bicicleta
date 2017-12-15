@@ -2,14 +2,19 @@ package com.boa.utils;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
+
 import com.boa.services.AppLocationService;
+import com.boa.wechain.Exercise;
 import com.boa.wechain.WechainApp;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 /**
  * Created by Boa (davo.figueroa14@gmail.com) on 15 nov 2017.
@@ -17,10 +22,6 @@ import java.util.ArrayList;
 public class DetectedActivitiesIntentService extends IntentService{
 	protected static final String TAG = "DetectedActivitiesIS";
 	
-	/**
-	 * This constructor is required, and calls the super IntentService(String)
-	 * constructor with the name for a worker thread.
-	 */
 	public DetectedActivitiesIntentService(){
 		// Use the TAG to name the worker thread.
 		super(TAG);
@@ -31,32 +32,75 @@ public class DetectedActivitiesIntentService extends IntentService{
 		super.onCreate();
 	}
 	
-	/**
-	 * Handles incoming intents.
-	 * @param intent The Intent is provided (inside a PendingIntent) when requestActivityUpdates() is called.
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onHandleIntent(Intent intent){
 		try{
+			Realm.init(WechainApp.getContext());
+			final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 			ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
-			// Get the list of the probable activities associated with the current state of the
-			// device. Each activity is associated with a confidence level, which is an int between
-			// 0 and 100.
 			ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
-			PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Common.KEY_DETECTED_ACTIVITIES, Utils.detectedActivitiesToJson(detectedActivities)).apply();
-			// Log each activity.
-			Log.i(TAG, "Actividad detectada");
+			preferences.edit().putString(Common.KEY_DETECTED_ACTIVITIES, Utils.detectedActivitiesToJson(detectedActivities)).apply();
+			
+			if(Common.DEBUG){
+				System.out.println(Utils.detectedActivitiesToJson(detectedActivities));
+				Utils.writeStringInFile(Utils.detectedActivitiesToJson(detectedActivities), "");
+			}
 			
 			for(DetectedActivity da : detectedActivities){
-				Log.i(TAG, Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%");
-				System.out.println(Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%");
+				System.out.println("Servicio: "+Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%");
+				Utils.writeStringInFile(Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", "");
 				Toast.makeText(WechainApp.getContext(), Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", Toast.LENGTH_SHORT).show();
 				
 				//Empezar a medir y tomar la posición cuando el nivel es aceptable
 				if(da.getConfidence() > 15){
 					AppLocationService.getCurrentPosition();
-					//Persistir
+					//Comparar si es la primera vez no guardamos nada
+					if(	!Utils.isEmpty(preferences.getString(Common.PREF_CURRENT_LAT, "")) && !Utils.isEmpty(preferences.getString(Common.PREF_CURRENT_LON, "")) &&
+						!Utils.isEmpty(preferences.getString(Common.PREF_SELECTED_LAT, "")) && !Utils.isEmpty(preferences.getString(Common.PREF_SELECTED_LON, ""))){
+						//si sigue quieto (prevenir bici fija)
+						if(	!preferences.getString(Common.PREF_CURRENT_LAT, "").equals(preferences.getString(Common.PREF_SELECTED_LAT, "")) ||
+							!preferences.getString(Common.PREF_CURRENT_LON, "").equals(preferences.getString(Common.PREF_SELECTED_LON, ""))){
+							final double meters = AppLocationService.meterDistanceBetweenPoints(Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, "")),
+								Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, "")), Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, "")),
+								Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, "")));
+							if(meters >= 100 && meters <= 2000){
+								//Se movió al menos 100 metros entonces guardamos pero filtramos si el movimiento fue superior o igual a 2 km
+								Realm realm = Realm.getDefaultInstance();
+								realm.executeTransaction(new Realm.Transaction(){
+									@Override
+									public void execute(Realm realm){
+										try{
+											long ts = System.currentTimeMillis();
+											Utils.writeStringInFile("Exercise.id: "+ts+" Exercise.initLat: "+Double.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, ""))
+												+ " Exercise.initLon: "+Double.valueOf(preferences.getString(Common.PREF_SELECTED_LON, ""))+
+												" Exercise.endLat: "+Double.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, ""))+
+												" Exercise.endLon: "+Double.valueOf(preferences.getString(Common.PREF_CURRENT_LON, ""))+ " Exercise.metters: "+meters+
+												" Exercise.email: "+preferences.getString("email", "")+ " Exercise.distance: "+
+													AppLocationService.meterDistanceBetweenPoints(Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, "")),
+													Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, "")),
+													Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, "")),
+													Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, "")))
+												, "");
+											Exercise exercise = new Exercise();
+											exercise.setId(ts);
+											exercise.setInitLat(Double.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, "")));
+											exercise.setInitLon(Double.valueOf(preferences.getString(Common.PREF_SELECTED_LON, "")));
+											exercise.setEndLat(Double.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, "")));
+											exercise.setEndLon(Double.valueOf(preferences.getString(Common.PREF_CURRENT_LON, "")));
+											exercise.setDistance(meters);
+											exercise.setStatus(Exercise.STATUS_PENDING);
+											exercise.setEmail(preferences.getString("email", ""));
+											realm.copyToRealmOrUpdate(exercise);
+										}catch(Exception e){
+											Utils.logError(WechainApp.getContext(), "DetectedActivitiesIntentService:onHandleIntent:execute - ", e);
+										}
+									}
+								});
+								realm.close();
+							}
+						}
+					}
 				}
 			}
 		}catch(Exception e){

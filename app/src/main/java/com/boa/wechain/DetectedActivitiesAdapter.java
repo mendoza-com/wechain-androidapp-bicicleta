@@ -33,12 +33,10 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity>{
 				view = LayoutInflater.from(getContext()).inflate(R.layout.detected_activity, parent, false);
 			}
 			
-			// Find the UI widgets.
 			TextView activityName = view.findViewById(R.id.detected_activity_name);
 			TextView activityConfidenceLevel = view.findViewById(R.id.detected_activity_confidence_level);
 			ProgressBar progressBar = view.findViewById(R.id.detected_activity_progress_bar);
 			
-			// Populate widgets with values.
 			if(detectedActivity != null){
 				activityName.setText(Utils.getActivityString(getContext(), detectedActivity.getType()));
 				activityConfidenceLevel.setText(getContext().getString(R.string.percent, detectedActivity.getConfidence()));
@@ -62,28 +60,31 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity>{
 			HashMap<Integer, Integer> detectedActivitiesMap = new HashMap<>();
 			
 			for(DetectedActivity activity : detectedActivities){
+				System.out.println("Actividad: "+Utils.getActivityString(getContext(), activity.getType())+"("+activity.getType()+") Level: "+activity.getConfidence());
 				detectedActivitiesMap.put(activity.getType(), activity.getConfidence());
 			}
 			
-			// Every time we detect new activities, we want to reset the confidence level of ALL
-			// activities that we monitor. Since we cannot directly change the confidence
-			// of a DetectedActivity, we use a temporary list of DetectedActivity objects. If an
-			// activity was freshly detected, we use its confidence level. Otherwise, we set the
-			// confidence level to zero.
 			ArrayList<DetectedActivity> tempList = new ArrayList<>();
 			
-			for(int i = 0; i < Common.MONITORED_ACTIVITIES.length; i++){
-				int confidence = detectedActivitiesMap.containsKey(Common.MONITORED_ACTIVITIES[i]) ? detectedActivitiesMap.get(Common.MONITORED_ACTIVITIES[i]) : 0;
-				tempList.add(new DetectedActivity(Common.MONITORED_ACTIVITIES[i], confidence));
-				System.out.println(Common.MONITORED_ACTIVITIES[i]+" "+confidence+"%");
-				//BICI es 1
+			if(Common.DEBUG){
+				for(int i = 0; i < Common.MONITORED_ALL_ACTIVITIES.length; i++){
+					int confidence = detectedActivitiesMap.containsKey(Common.MONITORED_ALL_ACTIVITIES[i]) ? detectedActivitiesMap.get(Common.MONITORED_ALL_ACTIVITIES[i]) : 0;
+					tempList.add(new DetectedActivity(Common.MONITORED_ALL_ACTIVITIES[i], confidence));
+					System.out.println(Utils.getActivityString(WechainApp.getContext(), Common.MONITORED_ALL_ACTIVITIES[i])+"("+Common.MONITORED_ALL_ACTIVITIES[i]+") "+confidence+"%");
+					Utils.writeStringInFile(Utils.getActivityString(WechainApp.getContext(), Common.MONITORED_ALL_ACTIVITIES[i])+
+						"("+Common.MONITORED_ALL_ACTIVITIES[i]+") "+confidence+"%", "");
+				}
+			}else{
+				for(int i = 0; i < Common.MONITORED_ACTIVITIES.length; i++){
+					int confidence = detectedActivitiesMap.containsKey(Common.MONITORED_ACTIVITIES[i]) ? detectedActivitiesMap.get(Common.MONITORED_ACTIVITIES[i]) : 0;
+					tempList.add(new DetectedActivity(Common.MONITORED_ACTIVITIES[i], confidence));
+					System.out.println(Utils.getActivityString(WechainApp.getContext(), Common.MONITORED_ACTIVITIES[i])+"("+Common.MONITORED_ACTIVITIES[i]+") "+confidence+"%");
+					//BICI es 1
+				}
 			}
 			
-			// Remove all items.
 			this.clear();
 			
-			// Adding the new list items notifies attached observers that the underlying data has
-			// changed and views reflecting the data should refresh.
 			for(DetectedActivity detectedActivity : tempList){
 				this.add(detectedActivity);
 			}

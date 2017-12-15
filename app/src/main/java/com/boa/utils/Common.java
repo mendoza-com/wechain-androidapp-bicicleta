@@ -27,23 +27,18 @@ public final class Common{
 	public static final String KEY_ACTIVITY_UPDATES_REQUESTED = PACKAGE_NAME + ".ACTIVITY_UPDATES_REQUESTED";
 	public static final String KEY_DETECTED_ACTIVITIES = PACKAGE_NAME + ".DETECTED_ACTIVITIES";
 	public static final String ID_GOOGLE = "669546340867-3pd5jcvsfgdd23ijl6scc0nsk30e5qog.apps.googleusercontent.com";//Cert
-	/**
-	 * The desired time between activity detections. Larger values result in fewer activity
-	 * detections while improving battery life. A value of 0 results in activity detections at the
-	 * fastest possible rate.
-	 */
 	public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 30 * 1000; // 30 seconds
-	/**
-	 * List of DetectedActivity types that we monitor in this sample.
-	 */
 	public static final int[] MONITORED_ACTIVITIES ={
-			/*DetectedActivity.STILL,
-			DetectedActivity.ON_FOOT,*/
-			DetectedActivity.WALKING,/*
-			DetectedActivity.RUNNING,*/
-			DetectedActivity.ON_BICYCLE/*,
-			DetectedActivity.IN_VEHICLE,
-			DetectedActivity.TILTING,
-			DetectedActivity.UNKNOWN*/
+		DetectedActivity.ON_BICYCLE
+	};
+	public static final int[] MONITORED_ALL_ACTIVITIES ={
+		DetectedActivity.STILL,
+		DetectedActivity.ON_FOOT,
+		DetectedActivity.WALKING,
+		DetectedActivity.RUNNING,
+		DetectedActivity.ON_BICYCLE,
+		DetectedActivity.IN_VEHICLE,
+		DetectedActivity.TILTING,
+		DetectedActivity.UNKNOWN
 	};
 }
