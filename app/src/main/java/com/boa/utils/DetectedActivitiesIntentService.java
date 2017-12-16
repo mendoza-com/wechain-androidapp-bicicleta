@@ -5,15 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
-
 import com.boa.services.AppLocationService;
 import com.boa.wechain.Exercise;
 import com.boa.wechain.WechainApp;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
-
 import java.util.ArrayList;
-
 import io.realm.Realm;
 
 /**
@@ -52,8 +49,8 @@ public class DetectedActivitiesIntentService extends IntentService{
 				Utils.writeStringInFile(Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", "");
 				Toast.makeText(WechainApp.getContext(), Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", Toast.LENGTH_SHORT).show();
 				
-				//Empezar a medir y tomar la posición cuando el nivel es aceptable
-				if(da.getConfidence() > 15){
+				//Empezar a medir y tomar la posición cuando el nivel es aceptable, filtrar por bici
+				if(da.getConfidence() > 15 /*&& da.getType() == 1*/){
 					AppLocationService.getCurrentPosition();
 					//Comparar si es la primera vez no guardamos nada
 					if(	!Utils.isEmpty(preferences.getString(Common.PREF_CURRENT_LAT, "")) && !Utils.isEmpty(preferences.getString(Common.PREF_CURRENT_LON, "")) &&
@@ -64,8 +61,8 @@ public class DetectedActivitiesIntentService extends IntentService{
 							final double meters = AppLocationService.meterDistanceBetweenPoints(Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, "")),
 								Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, "")), Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, "")),
 								Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, "")));
-							if(meters >= 100 && meters <= 2000){
-								//Se movió al menos 100 metros entonces guardamos pero filtramos si el movimiento fue superior o igual a 2 km
+							if(meters > 0 && meters <= 1000){
+								//Se movió algo entonces guardamos pero filtramos si el movimiento fue superior o igual a 1 km
 								Realm realm = Realm.getDefaultInstance();
 								realm.executeTransaction(new Realm.Transaction(){
 									@Override
@@ -103,6 +100,8 @@ public class DetectedActivitiesIntentService extends IntentService{
 					}
 				}
 			}
+			
+			//Calcular si con el resto ya tiene un km
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "DetectedActivitiesIntentService:onHandleIntent - ", e);
 		}

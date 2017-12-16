@@ -49,12 +49,6 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity>{
 		return view;
 	}
 	
-	/**
-	 * Process list of recently detected activities and updates the list of {@code DetectedActivity}
-	 * objects backing this adapter.
-	 *
-	 * @param detectedActivities the freshly detected activities
-	 */
 	void updateActivities(ArrayList<DetectedActivity> detectedActivities){
 		try{
 			HashMap<Integer, Integer> detectedActivitiesMap = new HashMap<>();
