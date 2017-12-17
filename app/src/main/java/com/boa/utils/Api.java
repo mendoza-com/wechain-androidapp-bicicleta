@@ -21,6 +21,7 @@ public class Api{
 	RetrofitApiService retrofitApiService;
 	public static final String BASE_URL = "https://api.wechain.org/v1/";
 	public static final String REGISTER = "users/email";
+	public static final String REWARD = "wechain/tx/";
 	public int timeout = 50;
 	
 	public static Api getIt(){
@@ -62,6 +63,14 @@ public class Api{
 			retrofitApiService.register(param).enqueue(getCallBackResponseBody(callback, "register"));
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "Api:register - ", e);
+		}
+	}
+	
+	public void reward(TxParam param, final ApiCallback callback){
+		try{
+			retrofitApiService.reward(param).enqueue(getCallBackResponseBody(callback, "reward"));
+		}catch(Exception e){
+			Utils.logError(WechainApp.getContext(), "Api:reward - ", e);
 		}
 	}
 	

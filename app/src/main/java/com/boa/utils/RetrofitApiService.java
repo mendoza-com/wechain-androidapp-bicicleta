@@ -18,4 +18,12 @@ public interface RetrofitApiService{
 	})
 	@POST(Api.REGISTER)
 	Call<ResponseBody> register(@Body UserParam param);
+	@Headers({
+		"Accept: application/json",
+		"Content-type: application/json",
+		"Accept-Language: es",
+		"Authorization: Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8"
+	})
+	@POST(Api.REWARD)
+	Call<ResponseBody> reward(@Body TxParam param);
 }

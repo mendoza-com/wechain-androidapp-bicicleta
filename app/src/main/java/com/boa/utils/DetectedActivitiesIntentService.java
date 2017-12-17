@@ -3,9 +3,11 @@ package com.boa.utils;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import com.boa.services.AppLocationService;
+import com.boa.services.SendDataTask;
 import com.boa.wechain.Exercise;
 import com.boa.wechain.WechainApp;
 import com.google.android.gms.location.ActivityRecognitionResult;
@@ -61,7 +63,7 @@ public class DetectedActivitiesIntentService extends IntentService{
 							final double meters = AppLocationService.meterDistanceBetweenPoints(Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, "")),
 								Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, "")), Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, "")),
 								Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, "")));
-							if(meters > 0 && meters <= 1000){
+							if(meters > 0 && meters <= 2000){
 								//Se movió algo entonces guardamos pero filtramos si el movimiento fue superior o igual a 1 km
 								Realm realm = Realm.getDefaultInstance();
 								realm.executeTransaction(new Realm.Transaction(){
@@ -102,6 +104,7 @@ public class DetectedActivitiesIntentService extends IntentService{
 			}
 			
 			//Calcular si con el resto ya tiene un km
+			new SendDataTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "DetectedActivitiesIntentService:onHandleIntent - ", e);
 		}
