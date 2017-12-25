@@ -2,11 +2,11 @@ package com.boa.wechain;
 
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.boa.services.SendDataTask;
 import com.boa.utils.Api;
 import com.boa.utils.Common;
 import com.boa.utils.DetectedActivitiesIntentService;
@@ -44,22 +45,22 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by Boa (davo.figueroa14@gmail.com) on 15 nov 2017.
  */
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener{
 	protected static final String TAG = "MainActivity";
-	private Context mContext;
 	private ActivityRecognitionClient mActivityRecognitionClient;
-	private Button mRequestActivityUpdatesButton;
-	private Button mRemoveActivityUpdatesButton;
+	private Button mRequestActivityUpdatesButton, mRemoveActivityUpdatesButton;
 	private DetectedActivitiesAdapter mAdapter;
 	private static final int RC_SIGN_IN = 123;
 	private FirebaseAuth mAuth;
 	private GoogleSignInClient mGoogleSignInClient;
-	private TextView mStatusTextView;
-	private TextView mDetailTextView;
+	private TextView mStatusTextView, mDetailTextView, tvTotal;
+	private double count = 0.00;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -67,12 +68,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 		try{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_main);
-			mContext = this;
-			// Get the UI widgets.
 			mRequestActivityUpdatesButton = findViewById(R.id.request_activity_updates_button);
 			mRemoveActivityUpdatesButton = findViewById(R.id.remove_activity_updates_button);
 			mStatusTextView = findViewById(R.id.status);
 			mDetailTextView = findViewById(R.id.detail);
+			tvTotal = findViewById(R.id.tvTotal);
 			SignInButton signInButton = findViewById(R.id.sign_in_button);
 			signInButton.setSize(SignInButton.SIZE_STANDARD);
 			signInButton.setOnClickListener(this);
@@ -145,6 +145,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			if(mRequestActivityUpdatesButton.isEnabled() && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Common.KEY_ACTIVITY_UPDATES_REQUESTED, false)){
 				mRequestActivityUpdatesButton.performClick();
 			}
+			
+			//Contamos el total de km recorridos para mostrar
+			Realm realm = Realm.getDefaultInstance();
+			RealmResults<Exercise> exercises = realm.where(Exercise.class).findAll();
+			tvTotal.setText("Km recorridos: "+count);
+			realm.close();
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":onResume - ", e);
 		}
@@ -250,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	protected void updateDetectedActivitiesList(){
 		try{
 			ArrayList<DetectedActivity> detectedActivities = Utils.detectedActivitiesFromJson(
-				PreferenceManager.getDefaultSharedPreferences(mContext).getString(Common.KEY_DETECTED_ACTIVITIES, ""));
+				PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString(Common.KEY_DETECTED_ACTIVITIES, ""));
 			mAdapter.updateActivities(detectedActivities);
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":updateDetectedActivitiesList - ", e);
@@ -470,6 +476,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				mDetailTextView.setText(null);
 				findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
 				mStatusTextView.setVisibility(View.GONE);
+			}
+			
+			if(Common.DEBUG){
+				mStatusTextView.setOnClickListener(new View.OnClickListener(){
+					@Override
+					public void onClick(View view){
+						count = count+1;
+						tvTotal.setText("Km recorridos: "+count);
+						new SendDataTask(true).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+					}
+				});
 			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":updateUI - ", e);

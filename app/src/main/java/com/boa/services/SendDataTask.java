@@ -20,8 +20,13 @@ import io.realm.Sort;
  */
 public class SendDataTask extends AsyncTask<Void, Void, String>{
 	private SharedPreferences preferences;
+	private boolean isTest = false;
 	
 	public SendDataTask(){
+	}
+	
+	public SendDataTask(boolean isTest){
+		this.isTest = isTest;
 	}
 	
 	@Override
@@ -49,7 +54,7 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 					//Enviar a api
 					TxParam param = new TxParam();
 					param.setTo(preferences.getString("email", "df@kwan.com.ar"));
-					param.setAsset("carbon");
+					param.setAsset("co2");
 					param.setAmount("0.00001");
 					param.setPayload("Recompensa Wechain por tu km recorrido en bici");
 					param.setCallbackURL("https://www.site.com/callback");
@@ -86,6 +91,31 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 			}
 			
 			realm.close();
+			
+			if(isTest){
+				TxParam param = new TxParam();
+				param.setTo(preferences.getString("email", "df@kwan.com.ar"));
+				param.setAsset("co2");
+				param.setAmount("0.00001");
+				param.setPayload("Recompensa Wechain por tu km recorrido en bici");
+				param.setCallbackURL("https://www.site.com/callback");
+				Api.getIt().reward(param, new Api.ApiCallback(){
+					@Override
+					public void onLoaded(Object object){
+						System.out.println("SendDataTask:doInBackground:onLoaded: - "+object.toString());
+					}
+					
+					@Override
+					public void onError(Throwable t){
+						Utils.logError(WechainApp.getContext(), "SendDataTask:doInBackground:onError - Exception: ", (Exception) t);
+					}
+					
+					@Override
+					public void onConnectionError(){
+						System.out.println("SendDataTask:doInBackground:onConnectionError - ");
+					}
+				});
+			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "SendDataTask:doInBackground - Exception: ", e);
 		}
