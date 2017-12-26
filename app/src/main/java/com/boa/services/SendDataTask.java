@@ -1,10 +1,9 @@
 package com.boa.services;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import com.boa.utils.Api;
-import com.boa.utils.Common;
 import com.boa.utils.TxParam;
 import com.boa.utils.Utils;
 import com.boa.wechain.Exercise;
@@ -33,15 +32,20 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 	protected String doInBackground(final Void... voids){
 		try{
 			Realm.init(WechainApp.getContext());
-			preferences	= WechainApp.getContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			preferences	= PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext());
 			final Realm realm	= Realm.getDefaultInstance();
 			RealmResults<Exercise> exercises = realm.where(Exercise.class).notEqualTo("status", Exercise.STATUS_SENDED).findAllSorted("id", Sort.ASCENDING);
 			System.out.println("Pendientes para enviar: "+exercises.size());
 			final List<Long> ids = new ArrayList<>();
 			double totalTrip = 0;
+			String email = preferences.getString("email", "");
 			
 			if(exercises.size() > 0){
 				for(Exercise exercise : exercises){
+					if(Utils.isEmpty(email) && !Utils.isEmpty(exercise.getEmail())){
+						email = exercise.getEmail();
+					}
+					
 					if(totalTrip <= 1000){
 						totalTrip = exercise.getDistance()+totalTrip;
 						ids.add(exercise.getId());
@@ -53,7 +57,7 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 				if(totalTrip <= 1000 && ids.size() > 0){
 					//Enviar a api
 					TxParam param = new TxParam();
-					param.setTo(preferences.getString("email", "df@kwan.com.ar"));
+					param.setTo(email);
 					param.setAsset("co2");
 					param.setAmount("0.00001");
 					param.setPayload("Recompensa Wechain por tu km recorrido en bici");
@@ -94,7 +98,7 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 			
 			if(isTest){
 				TxParam param = new TxParam();
-				param.setTo(preferences.getString("email", "df@kwan.com.ar"));
+				param.setTo(email);
 				param.setAsset("co2");
 				param.setAmount("0.00001");
 				param.setPayload("Recompensa Wechain por tu km recorrido en bici");

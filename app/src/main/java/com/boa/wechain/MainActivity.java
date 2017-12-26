@@ -149,7 +149,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			//Contamos el total de km recorridos para mostrar
 			Realm realm = Realm.getDefaultInstance();
 			RealmResults<Exercise> exercises = realm.where(Exercise.class).findAll();
-			tvTotal.setText("Km recorridos: "+count);
+			
+			if(exercises.size() > 0){
+				for(Exercise exercise : exercises){
+					count = count + exercise.getDistance();
+				}
+			}
+			
+			tvTotal.setText("Km recorridos: "+String.format("%.2f", count));
 			realm.close();
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":onResume - ", e);
@@ -455,6 +462,28 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 									@Override
 									public void onLoaded(Object object){
 										System.out.println(getLocalClassName()+":updateUI:onLoaded - "+object);
+										Realm realm = Realm.getDefaultInstance();
+										realm.executeTransaction(new Realm.Transaction(){
+											@Override
+											public void execute(Realm realm){
+												long ts = System.currentTimeMillis();
+												Exercise exercise = new Exercise();
+												exercise.setId(ts);
+												exercise.setInitLat(Double.valueOf(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext())
+													.getString(Common.PREF_SELECTED_LAT, "")));
+												exercise.setInitLon(Double.valueOf(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext())
+													.getString(Common.PREF_SELECTED_LON, "")));
+												exercise.setEndLat(Double.valueOf(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext())
+													.getString(Common.PREF_CURRENT_LAT, "")));
+												exercise.setEndLon(Double.valueOf(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext())
+													.getString(Common.PREF_CURRENT_LON, "")));
+												exercise.setDistance(0.001);
+												exercise.setStatus(Exercise.STATUS_PENDING);
+												exercise.setEmail(personEmail);
+												realm.copyToRealmOrUpdate(exercise);
+											}
+										});
+										realm.close();
 									}
 									
 									@Override
@@ -482,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				mStatusTextView.setOnClickListener(new View.OnClickListener(){
 					@Override
 					public void onClick(View view){
-						count = count+1;
+						count = count+0.1;
 						tvTotal.setText("Km recorridos: "+count);
 						new SendDataTask(true).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 					}

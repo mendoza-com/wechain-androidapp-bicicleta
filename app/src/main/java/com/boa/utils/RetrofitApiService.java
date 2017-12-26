@@ -22,7 +22,7 @@ public interface RetrofitApiService{
 		"Accept: application/json",
 		"Content-type: application/json",
 		"Accept-Language: es",
-		"Authorization: Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8"
+		"Authorization: Bearer bdd91196f9540316308fc855af89b65f371c605d"
 	})
 	@POST(Api.REWARD)
 	Call<ResponseBody> reward(@Body TxParam param);
