@@ -10,6 +10,7 @@ public final class Common{
 	//En true desbloquea la impresión de trackers y variables para debug
 	public static final boolean		DEBUG					= false;
 	public static final String		WEB						= "https://www.wechain.org";
+	public static final String		WEBID					= "https://www.wechain.org/#/profile/";
 	//Referencia al diccionario de preferencias para la app actual
 	public static final String		KEY_PREF				= "WechainPref";
 	public static final String[]	PERMISSIONS				= {	Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,

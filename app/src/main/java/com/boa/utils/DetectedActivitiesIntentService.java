@@ -63,7 +63,7 @@ public class DetectedActivitiesIntentService extends IntentService{
 							final double meters = AppLocationService.meterDistanceBetweenPoints(Float.valueOf(preferences.getString(Common.PREF_CURRENT_LAT, "")),
 								Float.valueOf(preferences.getString(Common.PREF_CURRENT_LON, "")), Float.valueOf(preferences.getString(Common.PREF_SELECTED_LAT, "")),
 								Float.valueOf(preferences.getString(Common.PREF_SELECTED_LON, "")));
-							if(meters > 0 && meters <= 2000){
+							if(meters > 0 && meters <= 1000){
 								//Se movió algo entonces guardamos pero filtramos si el movimiento fue superior o igual a 1 km
 								Realm realm = Realm.getDefaultInstance();
 								realm.executeTransaction(new Realm.Transaction(){

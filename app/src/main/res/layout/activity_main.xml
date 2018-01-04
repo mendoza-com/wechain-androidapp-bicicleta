@@ -128,11 +128,12 @@
 			android:id="@+id/tvTotal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			style="@style/ThemeOverlay.MyTextDetail"
+			style="@style/ThemeOverlay.DistanceTextDetail"
 			android:layout_alignParentEnd="true"
 			android:layout_alignParentRight="true"
 			android:text="Km recorridos: " />
 		<ListView
+			android:layout_marginTop="20dp"
 			android:layout_below="@+id/web"
 			android:id="@+id/detected_activities_listview"
 			android:layout_width="match_parent"

@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * Created by Boa (davo.figueroa14@gmail.com) on 15 nov 2017.
@@ -24,8 +25,11 @@ public class WechainApp extends MultiDexApplication{
 		instance = this;
 		super.onCreate();
 		Realm.init(this);
+		RealmConfiguration config = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
+		Realm.setDefaultConfiguration(config);
 		Realm realm = Realm.getDefaultInstance();
 		realm.setAutoRefresh(true);
+		realm.close();
 		
 		if(!Common.DEBUG){
 			Fabric.with(this, new Crashlytics());

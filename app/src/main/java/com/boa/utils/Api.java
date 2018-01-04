@@ -81,7 +81,7 @@ public class Api{
 				public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response){
 					try{
 						if(response.isSuccessful()){
-							callback.onLoaded(response.body());
+							callback.onLoaded(response.body().string());
 						}else{
 							callback.onConnectionError();
 						}
@@ -107,7 +107,7 @@ public class Api{
 	}
 	
 	public interface ApiCallback<T>{
-		void onLoaded(T object);
+		void onLoaded(String object);
 		void onError(Throwable t);
 		void onConnectionError();
 	}

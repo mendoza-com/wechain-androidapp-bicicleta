@@ -64,8 +64,7 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 					param.setCallbackURL("https://www.site.com/callback");
 					Api.getIt().reward(param, new Api.ApiCallback(){
 						@Override
-						public void onLoaded(Object object){
-							System.out.println("SendDataTask:doInBackground:onLoaded: - "+object.toString());
+						public void onLoaded(String object){
 							//En callback de api procesamos y marcamos
 							realm.executeTransaction(new Realm.Transaction(){
 								@Override
@@ -105,8 +104,8 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 				param.setCallbackURL("https://www.site.com/callback");
 				Api.getIt().reward(param, new Api.ApiCallback(){
 					@Override
-					public void onLoaded(Object object){
-						System.out.println("SendDataTask:doInBackground:onLoaded: - "+object.toString());
+					public void onLoaded(String object){
+						//System.out.println("SendDataTask:doInBackground:onLoaded: - "+object.toString());
 					}
 					
 					@Override

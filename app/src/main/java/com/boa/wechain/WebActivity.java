@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.boa.utils.Common;
 import com.boa.utils.Utils;
 import com.crashlytics.android.Crashlytics;
@@ -33,7 +33,14 @@ public class WebActivity extends Activity{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_web);
 			wvAll = findViewById(R.id.wvAll);
-			wvAll.loadUrl(Common.WEB);
+			String url = Common.WEB;
+			
+			if(!Utils.isEmpty(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("id", ""))){
+				url = Common.WEBID+PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("id", "");
+			}
+			
+			System.out.println("URL: "+url);
+			wvAll.loadUrl(url);
 			WebSettings webSettings = wvAll.getSettings();
 			webSettings.setJavaScriptEnabled(true);
 			wvAll.setWebViewClient(new MyWebClient());

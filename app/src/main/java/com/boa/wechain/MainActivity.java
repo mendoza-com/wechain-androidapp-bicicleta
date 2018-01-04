@@ -15,6 +15,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -149,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			//Contamos el total de km recorridos para mostrar
 			Realm realm = Realm.getDefaultInstance();
 			RealmResults<Exercise> exercises = realm.where(Exercise.class).findAll();
+			count = 0;
 			
 			if(exercises.size() > 0){
 				for(Exercise exercise : exercises){
@@ -156,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				}
 			}
 			
-			tvTotal.setText("Km recorridos: "+String.format("%.2f", count));
+			tvTotal.setText(Html.fromHtml("Km recorridos: <b>"+String.format("%.2f", count/1000)+"</b>"));
 			realm.close();
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":onResume - ", e);
@@ -335,11 +338,69 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				break;
 				
 				case R.id.web:
-					startActivity(new Intent(MainActivity.this, WebActivity.class));
+					//Conseguir el id para redirigir url
+					if(Utils.isEmpty(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("id",""))){
+						new Thread(new Runnable(){
+							@Override
+							public void run(){
+								UserParam param = new UserParam();
+								param.setEmail(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("email", ""));
+								Api.getIt().register(param, new Api.ApiCallback(){
+									@Override
+									public void onLoaded(String object){
+										saveId(object);
+										runOnUiThread(new Runnable(){
+											@Override
+											public void run(){
+												startActivity(new Intent(MainActivity.this, WebActivity.class));
+											}
+										});
+									}
+									
+									@Override
+									public void onError(Throwable t){
+										Utils.logError(WechainApp.getContext(), getLocalClassName()+":onClick:onError - ", (Exception) t);
+									}
+									
+									@Override
+									public void onConnectionError(){
+										System.out.println(getLocalClassName()+":onClick:onConnectionError - ");
+									}
+								});
+							}
+						}).start();
+					}else{
+						startActivity(new Intent(MainActivity.this, WebActivity.class));
+					}
 				break;
 			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":onClick - ", e);
+		}
+	}
+	
+	public void saveId(String object){
+		try{
+			if(Utils.isEmpty(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("id",""))){
+				JSONObject jsonObject = new JSONObject(object);
+				
+				if(jsonObject.has("data")){
+					if(!jsonObject.isNull("data")){
+						if(jsonObject.getJSONObject("data") != null){
+							if(jsonObject.getJSONObject("data").has("_id")){
+								if(!jsonObject.getJSONObject("data").isNull("_id")){
+									if(!Utils.isEmpty(jsonObject.getJSONObject("data").getString("_id"))){
+										PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).edit().putString("id", jsonObject.getJSONObject("data")
+											.getString("_id")).apply();
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch(Exception e){
+			Utils.logError(WechainApp.getContext(), getLocalClassName()+":saveId - ", e);
 		}
 	}
 	
@@ -460,8 +521,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 								param.setEmail(personEmail);
 								Api.getIt().register(param, new Api.ApiCallback(){
 									@Override
-									public void onLoaded(Object object){
-										System.out.println(getLocalClassName()+":updateUI:onLoaded - "+object);
+									public void onLoaded(String object){
+										saveId(object);
 										Realm realm = Realm.getDefaultInstance();
 										realm.executeTransaction(new Realm.Transaction(){
 											@Override
@@ -512,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 					@Override
 					public void onClick(View view){
 						count = count+0.1;
-						tvTotal.setText("Km recorridos: "+count);
+						tvTotal.setText("Km recorridos: "+count/1000);
 						new SendDataTask(true).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 					}
 				});
