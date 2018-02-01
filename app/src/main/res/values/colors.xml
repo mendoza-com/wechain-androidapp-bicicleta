@@ -5,4 +5,12 @@
 	<color name="colorAccent">#FF4081</color>
 	<color name="grey_100">#F5F5F5</color>
 	<color name="grey_300">#E0E0E0</color>
+	<color name="background">#49BEE2</color>
+	<color name="oval">#08FF8A</color>
+	<color name="item1">#008EBA</color>
+	<color name="item2">#25A7CF</color>
+	<color name="item3">#37B4DA</color>
+	<color name="item4">#86D2EB</color>
+	<color name="popup">#D80083</color>
+	<color name="subtitle">#ED94C4</color>
 </resources>
