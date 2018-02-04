@@ -13,4 +13,10 @@
 	<color name="item4">#86D2EB</color>
 	<color name="popup">#D80083</color>
 	<color name="subtitle">#ED94C4</color>
+	<color name="white">#FFFFFF</color>
+	<color name="background_bar">#E9E9EA</color>
+	<color name="refill_bar">#FF1DA7</color>
+	<color name="icon">#FFD6ED</color>
+	<color name="black">#000000</color>
+	<color name="text_oval">#137741</color>
 </resources>

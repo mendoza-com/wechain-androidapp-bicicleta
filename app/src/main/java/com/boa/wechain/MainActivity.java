@@ -69,14 +69,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	public void onCreate(Bundle savedInstanceState){
 		try{
 			super.onCreate(savedInstanceState);
-			setContentView(R.layout.activity_main);
+			setContentView(R.layout.login);
 			mRequestActivityUpdatesButton = findViewById(R.id.request_activity_updates_button);
 			mRemoveActivityUpdatesButton = findViewById(R.id.remove_activity_updates_button);
 			mStatusTextView = findViewById(R.id.status);
 			mDetailTextView = findViewById(R.id.detail);
 			tvTotal = findViewById(R.id.tvTotal);
 			SignInButton signInButton = findViewById(R.id.sign_in_button);
-			signInButton.setSize(SignInButton.SIZE_STANDARD);
+			signInButton.setSize(SignInButton.SIZE_WIDE);
 			signInButton.setOnClickListener(this);
 			findViewById(R.id.web).setOnClickListener(this);
 			findViewById(R.id.sign_out_button).setOnClickListener(this);

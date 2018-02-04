@@ -30,7 +30,7 @@ public class NetworkStateReceiver extends BroadcastReceiver{
 			firstConnection	= true;
 			Realm.init(context);
 			/*Realm realm		= Realm.getDefaultInstance();
-			long total2Send	= realm.where(Infringement.class).lessThan(Common.KEY_STATUS, Infringement.STATUS_SENDED).count();//Reemplazar por item a enviar
+			long total2Send	= realm.where(Infringement.class).lessThan(Common.KEY_STATUS, Infringement.STATUS_SENDED).count();//Reemplazar por days a enviar
 			realm.close();
 			
 			if(Common.DEBUG){

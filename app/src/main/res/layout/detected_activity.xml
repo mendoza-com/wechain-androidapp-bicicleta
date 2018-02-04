@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	android:background="@color/white">
 	<RelativeLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="gone">
 		<TextView
 			android:id="@+id/detected_activity_name"
 			android:layout_width="wrap_content"
@@ -23,10 +26,17 @@
 	</RelativeLayout>
 	<ProgressBar
 		android:id="@+id/detected_activity_progress_bar"
-		style="@android:style/Widget.ProgressBar.Horizontal"
+		style="@style/MyProgressBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/progress_bar_top_margin"
-		android:minHeight="@dimen/progress_bar_min_height"
+		android:layout_margin="10dp"
 		android:progress="1" />
+	<TextView
+		android:id="@+id/tvBar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:textStyle="bold"
+		android:textColor="@color/refill_bar"
+		android:text="Iniciando medición" />
 </LinearLayout>

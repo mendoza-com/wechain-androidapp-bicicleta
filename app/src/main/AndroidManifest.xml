@@ -25,18 +25,23 @@
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher"
 		android:supportsRtl="true"
-		android:theme="@style/AppTheme">
+		android:theme="@style/FullScreen">
 		<activity
 			android:name="com.boa.wechain.MainActivity"
 			android:label="@string/app_name"
-			android:screenOrientation="portrait">
+			android:screenOrientation="portrait"
+			android:theme="@style/FullScreen"
+			android:windowSoftInputMode="adjustResize|stateHidden">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name="com.boa.wechain.WebActivity"
-			android:screenOrientation="portrait" />
+		<activity
+			android:name="com.boa.wechain.WebActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/FullScreen"
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<service android:name="com.boa.utils.DetectedActivitiesIntentService"
 			android:exported="false" />
 		<meta-data

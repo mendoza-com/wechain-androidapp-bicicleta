@@ -2,8 +2,8 @@
 	<string name="app_name">Wechain</string>
 	<string name="prompt_email">Email</string>
 	<string name="prompt_password">Contraseña</string>
-	<string name="action_sign_in">Ingresar o registrar</string>
-	<string name="action_sign_in_short">Ingresar</string>
+	<string name="action_sign_in">Continuar con Google</string>
+	<string name="action_sign_in_short">Continuar</string>
 	<string name="error_invalid_email">La dirección de correo no es válida</string>
 	<string name="error_invalid_password">La</string>
 	<string name="error_incorrect_password">This password is incorrect</string>
