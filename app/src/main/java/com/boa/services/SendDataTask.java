@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import com.boa.utils.Api;
+import com.boa.utils.Common;
 import com.boa.utils.TxParam;
 import com.boa.utils.Utils;
 import com.boa.wechain.Exercise;
@@ -59,7 +60,7 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 					TxParam param = new TxParam();
 					param.setTo(email);
 					param.setAsset("co2");
-					param.setAmount("0.00001");
+					param.setAmount(Common.REWARD_VALUE);
 					param.setPayload("Recompensa Wechain por tu km recorrido en bici");
 					param.setCallbackURL("https://www.site.com/callback");
 					Api.getIt().reward(param, new Api.ApiCallback(){
@@ -99,7 +100,7 @@ public class SendDataTask extends AsyncTask<Void, Void, String>{
 				TxParam param = new TxParam();
 				param.setTo(email);
 				param.setAsset("co2");
-				param.setAmount("0.00001");
+				param.setAmount(Common.REWARD_VALUE);
 				param.setPayload("Recompensa Wechain por tu km recorrido en bici");
 				param.setCallbackURL("https://www.site.com/callback");
 				Api.getIt().reward(param, new Api.ApiCallback(){

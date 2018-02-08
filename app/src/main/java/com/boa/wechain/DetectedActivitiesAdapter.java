@@ -60,7 +60,7 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity>{
 			
 			ArrayList<DetectedActivity> tempList = new ArrayList<>();
 			
-			if(Common.DEBUG){
+			if(Common.TRACK_ALL){
 				for(int i = 0; i < Common.MONITORED_ALL_ACTIVITIES.length; i++){
 					int confidence = detectedActivitiesMap.containsKey(Common.MONITORED_ALL_ACTIVITIES[i]) ? detectedActivitiesMap.get(Common.MONITORED_ALL_ACTIVITIES[i]) : 0;
 					tempList.add(new DetectedActivity(Common.MONITORED_ALL_ACTIVITIES[i], confidence));

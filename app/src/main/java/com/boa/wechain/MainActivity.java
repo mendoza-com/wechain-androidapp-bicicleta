@@ -19,7 +19,9 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.boa.services.SendDataTask;
 import com.boa.utils.Api;
@@ -43,10 +45,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -61,8 +65,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	private static final int RC_SIGN_IN = 123;
 	private FirebaseAuth mAuth;
 	private GoogleSignInClient mGoogleSignInClient;
-	private TextView mStatusTextView, mDetailTextView, tvTotal;
-	private double count = 0.00;
+	private TextView mStatusTextView, mDetailTextView, tvTotal, tvCount, tvCountDays, tvCountFortnight, tvCountWeek, tvCountMonth, tvBalance;
+	private double count = 0.00, countDay = 0.00, countFortnight = 0.00, countWeek = 0.00, countMonth = 0.00;
+	private RelativeLayout rlSplash, rlHome;
+	private CircleImageView ivUser;
+	private Uri img;
+	private String name;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -81,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			findViewById(R.id.web).setOnClickListener(this);
 			findViewById(R.id.sign_out_button).setOnClickListener(this);
 			findViewById(R.id.disconnect_button).setOnClickListener(this);
+			rlSplash = findViewById(R.id.rlSplash);
+			rlHome = findViewById(R.id.rlHome);
+			ivUser = findViewById(R.id.ivUser);
+			tvCount = findViewById(R.id.tvCount);
+			tvCountDays = findViewById(R.id.tvCountDays);
+			tvCountFortnight = findViewById(R.id.tvCountFortnight);
+			tvCountWeek = findViewById(R.id.tvCountWeek);
+			tvCountMonth = findViewById(R.id.tvCountMonth);
+			tvBalance = findViewById(R.id.tvBalance);
 			GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
 			mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 			mAuth = FirebaseAuth.getInstance();
@@ -152,6 +169,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			Realm realm = Realm.getDefaultInstance();
 			RealmResults<Exercise> exercises = realm.where(Exercise.class).findAll();
 			count = 0;
+			countDay = 0;
+			countFortnight = 0;
+			countWeek = 0;
+			countMonth = 0;
 			
 			if(exercises.size() > 0){
 				for(Exercise exercise : exercises){
@@ -160,6 +181,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			}
 			
 			tvTotal.setText(Html.fromHtml("Km recorridos: <b>"+String.format("%.2f", count/1000)+"</b>"));
+			tvCount.setText(Html.fromHtml("<b>"+String.format("%.2f", count/1000)+"</b>"));
+			tvCountDays.setText(Html.fromHtml("<b>"+String.format("%.2f", countDay/1000)+" KM</b>"));
+			tvCountFortnight.setText(Html.fromHtml("<b>"+String.format("%.2f", countFortnight/1000)+" KM</b>"));
+			tvCountWeek.setText(Html.fromHtml("<b>"+String.format("%.2f", countWeek/1000)+" KM</b>"));
+			tvCountMonth.setText(Html.fromHtml("<b>"+String.format("%.2f", countMonth/1000)+" KM</b>"));
+			System.out.println("Count: "+count+" VAL: "+Common.REWARD_VALUE+" DOU: "+Double.valueOf(Common.REWARD_VALUE));
+			tvBalance.setText((count*(Double.valueOf(Common.REWARD_VALUE))/1000)+"");
 			realm.close();
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":onResume - ", e);
@@ -493,6 +521,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			mDetailTextView.setVisibility(View.VISIBLE);
 			
 			if(user != null){
+				rlHome.setVisibility(RelativeLayout.VISIBLE);
+				rlSplash.setVisibility(RelativeLayout.GONE);
 				mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
 				findViewById(R.id.sign_in_button).setVisibility(View.GONE);
 				GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
@@ -504,6 +534,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 					final String personEmail = acct.getEmail();
 					String personId = acct.getId();
 					Uri personPhoto = acct.getPhotoUrl();
+					img = personPhoto;
+					name = personName;
+					Picasso.with(WechainApp.getContext()).load(personPhoto).placeholder(R.drawable.ic_shortcut_person).into(ivUser);
 					mStatusTextView.setText(getString(R.string.google_status_fmt, personEmail));
 					mStatusTextView.setVisibility(View.VISIBLE);
 					
@@ -562,6 +595,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 					}
 				}
 			}else{
+				rlHome.setVisibility(RelativeLayout.GONE);
+				rlSplash.setVisibility(RelativeLayout.VISIBLE);
 				mStatusTextView.setText("Salir");
 				mDetailTextView.setText(null);
 				findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
@@ -574,6 +609,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 					public void onClick(View view){
 						count = count+0.1;
 						tvTotal.setText("Km recorridos: "+count/1000);
+						tvCount.setText(""+count/1000);
 						new SendDataTask(true).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 					}
 				});

@@ -10,7 +10,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:background="@color/background"
-		android:visibility="gone">
+		android:visibility="visible">
 		<ImageView
 			android:id="@+id/ivLogo"
 			android:adjustViewBounds="true"
@@ -41,7 +41,8 @@
 	<RelativeLayout
 		android:id="@+id/rlHome"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:visibility="gone">
 		<RelativeLayout
 			android:id="@+id/rlHeader"
 			android:layout_width="match_parent"
@@ -61,9 +62,8 @@
 				android:paddingRight="@dimen/activity_horizontal_margin"
 				android:paddingTop="@dimen/activity_vertical_margin"
 				android:text="weride" />
-			<ImageView
+			<de.hdodenhof.circleimageview.CircleImageView
 				android:id="@+id/ivUser"
-				android:contentDescription="@string/app_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_alignParentTop="true"
@@ -268,6 +268,10 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:scrollbars="none" />
+			<View
+				android:layout_below="@+id/detected_activities_listview"
+				android:layout_width="match_parent"
+				android:layout_height="400dp" />
 		</RelativeLayout>
 	</RelativeLayout>
 	<RelativeLayout

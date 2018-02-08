@@ -42,14 +42,14 @@ public class DetectedActivitiesIntentService extends IntentService{
 			preferences.edit().putString(Common.KEY_DETECTED_ACTIVITIES, Utils.detectedActivitiesToJson(detectedActivities)).apply();
 			
 			if(Common.DEBUG){
-				System.out.println(Utils.detectedActivitiesToJson(detectedActivities));
+				System.out.println("Track: "+Utils.detectedActivitiesToJson(detectedActivities));
 				Utils.writeStringInFile(Utils.detectedActivitiesToJson(detectedActivities), "");
 			}
 			
 			for(DetectedActivity da : detectedActivities){
 				System.out.println("Servicio: "+Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%");
 				Utils.writeStringInFile(Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", "");
-				Toast.makeText(WechainApp.getContext(), Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(WechainApp.getContext(), Utils.getActivityString(getApplicationContext(), da.getType()) + " " + da.getConfidence() + "%", Toast.LENGTH_SHORT).show();
 				
 				//Empezar a medir y tomar la posición cuando el nivel es aceptable, filtrar por bici
 				if(da.getConfidence() > 15 /*&& da.getType() == 1*/){
