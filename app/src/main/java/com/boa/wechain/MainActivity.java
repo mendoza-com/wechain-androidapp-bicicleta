@@ -27,6 +27,7 @@ import com.boa.services.SendDataTask;
 import com.boa.utils.Api;
 import com.boa.utils.Common;
 import com.boa.utils.DetectedActivitiesIntentService;
+import com.boa.utils.Popup;
 import com.boa.utils.UserParam;
 import com.boa.utils.Utils;
 import com.firebase.ui.auth.AuthUI;
@@ -366,44 +367,54 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 				break;
 				
 				case R.id.web:
-					//Conseguir el id para redirigir url
-					if(Utils.isEmpty(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("id",""))){
-						new Thread(new Runnable(){
-							@Override
-							public void run(){
-								UserParam param = new UserParam();
-								param.setEmail(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("email", ""));
-								Api.getIt().register(param, new Api.ApiCallback(){
-									@Override
-									public void onLoaded(String object){
-										saveId(object);
-										runOnUiThread(new Runnable(){
-											@Override
-											public void run(){
-												startActivity(new Intent(MainActivity.this, WebActivity.class));
-											}
-										});
-									}
-									
-									@Override
-									public void onError(Throwable t){
-										Utils.logError(WechainApp.getContext(), getLocalClassName()+":onClick:onError - ", (Exception) t);
-									}
-									
-									@Override
-									public void onConnectionError(){
-										System.out.println(getLocalClassName()+":onClick:onConnectionError - ");
-									}
-								});
-							}
-						}).start();
-					}else{
-						startActivity(new Intent(MainActivity.this, WebActivity.class));
-					}
+					go2Wechain();
 				break;
 			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":onClick - ", e);
+		}
+	}
+	
+	public void go2Wechain(){
+		try{
+			//Conseguir el id para redirigir url
+			if(Utils.isEmpty(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("id",""))){
+				new Thread(new Runnable(){
+					@Override
+					public void run(){
+						UserParam param = new UserParam();
+						param.setEmail(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getString("email", ""));
+						Api.getIt().register(param, new Api.ApiCallback(){
+							@Override
+							public void onLoaded(String object){
+								saveId(object);
+								runOnUiThread(new Runnable(){
+									@Override
+									public void run(){
+										startActivity(new Intent(MainActivity.this, WebActivity.class));
+									}
+								});
+							}
+							
+							@Override
+							public void onError(Throwable t){
+								Utils.logError(WechainApp.getContext(), getLocalClassName()+":go2Wechain:onClick:onError - ", (Exception) t);
+								startActivity(new Intent(MainActivity.this, WebActivity.class));
+							}
+							
+							@Override
+							public void onConnectionError(){
+								System.out.println(getLocalClassName()+":go2Wechain:onClick:onConnectionError - ");
+								startActivity(new Intent(MainActivity.this, WebActivity.class));
+							}
+						});
+					}
+				}).start();
+			}else{
+				startActivity(new Intent(MainActivity.this, WebActivity.class));
+			}
+		}catch(Exception e){
+			Utils.logError(WechainApp.getContext(), getLocalClassName()+":go2Wechain - ", e);
 		}
 	}
 	
@@ -486,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 		}
 	}
 	
-	private void signOut(){
+	public void signOut(){
 		try{
 			mAuth.signOut();
 			mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>(){
@@ -539,6 +550,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 					Picasso.with(WechainApp.getContext()).load(personPhoto).placeholder(R.drawable.ic_shortcut_person).into(ivUser);
 					mStatusTextView.setText(getString(R.string.google_status_fmt, personEmail));
 					mStatusTextView.setVisibility(View.VISIBLE);
+					ivUser.setOnClickListener(new View.OnClickListener(){
+						@Override
+						public void onClick(View v){
+							try{
+								Popup popup = new Popup(MainActivity.this, name, personEmail, img);
+								popup.show();
+							}catch(Exception e){
+								Utils.logError(WechainApp.getContext(), getLocalClassName()+":updateUI:onClick - ", e);
+							}
+						}
+					});
 					
 					if(Common.DEBUG){
 						System.out.println("personName: "+personName+"\npersonGivenName: "+personGivenName+"\npersonFamilyName: "+personFamilyName+"\npersonEmail: "+personEmail
@@ -546,7 +568,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 					}
 					
 					if(Utils.isEmpty(PreferenceManager.getDefaultSharedPreferences(this).getString("email", ""))){
-						PreferenceManager.getDefaultSharedPreferences(this).edit().putString("email", personEmail).apply();
+						PreferenceManager.getDefaultSharedPreferences(this).edit().putString("email", personEmail).putString("name", name)
+							.putString("image", img.getPath()).apply();
 						new Thread(new Runnable(){
 							@Override
 							public void run(){
