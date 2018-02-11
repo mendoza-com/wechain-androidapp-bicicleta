@@ -1,6 +1,5 @@
 package com.boa.utils;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
@@ -13,12 +12,10 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.boa.wechain.MainActivity;
 import com.boa.wechain.R;
 import com.boa.wechain.WechainApp;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 /**

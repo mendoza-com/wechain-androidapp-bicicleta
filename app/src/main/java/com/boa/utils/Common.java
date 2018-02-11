@@ -8,7 +8,7 @@ import com.google.android.gms.location.DetectedActivity;
  */
 public final class Common{
 	//En true desbloquea la impresión de trackers y variables para debug
-	public static final boolean		DEBUG					= true;
+	public static final boolean		DEBUG					= false;
 	public static final boolean		TRACK_ALL				= false;
 	public static final String		REWARD_VALUE			= "0.00001";
 	public static final String		WEB						= "https://www.wechain.org";
@@ -24,6 +24,10 @@ public final class Common{
 	public static final String		PREF_SELECTED_LON		= "prefSelectedLon";
 	public static final double		DEFAULT_LAT				= -32.8832979;//Mendoza capital
 	public static final double		DEFAULT_LON				= -68.8760287;
+	private static final int		SECOND_MILLIS			= 1000;
+	private static final int		MINUTE_MILLIS			= 60 * SECOND_MILLIS;
+	private static final int		HOUR_MILLIS				= 60 * MINUTE_MILLIS;
+	public static final int			DAY_MILLIS				= 24 * HOUR_MILLIS;
 	//Referencia para saber si hubo o no sesión iniciada
 	public static final String		PREF_SESSION_STARTED	= "prefSessionStarted";
 	private static final String PACKAGE_NAME = "com.google.android.gms.location.activityrecognition";

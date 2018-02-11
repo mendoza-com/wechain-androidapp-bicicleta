@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -50,10 +52,15 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
+
+import static com.boa.utils.Common.DAY_MILLIS;
 
 /**
  * Created by Boa (davo.figueroa14@gmail.com) on 15 nov 2017.
@@ -72,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	private CircleImageView ivUser;
 	private Uri img;
 	private String name;
+	private ListView detectedActivitiesListView;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -142,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 	
 	public void init(){
 		try{
-			ListView detectedActivitiesListView = findViewById(R.id.detected_activities_listview);
+			detectedActivitiesListView = findViewById(R.id.detected_activities_listview);
 			setButtonsEnabledState();
 			ArrayList<DetectedActivity> detectedActivities = Utils.detectedActivitiesFromJson(
 				PreferenceManager.getDefaultSharedPreferences(this).getString(Common.KEY_DETECTED_ACTIVITIES, ""));
@@ -178,6 +186,25 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			if(exercises.size() > 0){
 				for(Exercise exercise : exercises){
 					count = count + exercise.getDistance();
+					
+					//Totalizar a semana anterior
+					long diff = System.currentTimeMillis() - exercise.getId();
+					
+					if(diff/DAY_MILLIS <= 7){
+						countDay = countDay + exercise.getDistance();
+					}else{
+						if(diff/DAY_MILLIS > 7 && diff/DAY_MILLIS <= 15){
+							countFortnight = countFortnight+exercise.getDistance();
+						}else{
+							if(diff/DAY_MILLIS > 15 && diff/DAY_MILLIS <= 21){
+								countWeek = countWeek+exercise.getDistance();
+							}else{
+								if(diff/DAY_MILLIS > 21 && diff/DAY_MILLIS <= 30){
+									countMonth = countMonth+exercise.getDistance();
+								}
+							}
+						}
+					}
 				}
 			}
 			
@@ -188,8 +215,21 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 			tvCountWeek.setText(Html.fromHtml("<b>"+String.format("%.2f", countWeek/1000)+" KM</b>"));
 			tvCountMonth.setText(Html.fromHtml("<b>"+String.format("%.2f", countMonth/1000)+" KM</b>"));
 			System.out.println("Count: "+count+" VAL: "+Common.REWARD_VALUE+" DOU: "+Double.valueOf(Common.REWARD_VALUE));
-			tvBalance.setText((count*(Double.valueOf(Common.REWARD_VALUE))/1000)+"");
+			
+			if(count > 0){
+				tvBalance.setText(String.format("%.5f", (count*(Double.valueOf(Common.REWARD_VALUE))/1000))+"");
+			}else{
+				//Habría que ver con la api cuando ande
+				tvBalance.setText("0.00000");
+			}
+			
 			realm.close();
+			//Mostrar barra si hay actividad
+			if(PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).getBoolean("showBar", false)){
+				detectedActivitiesListView.setVisibility(ListView.VISIBLE);
+			}else{
+				detectedActivitiesListView.setVisibility(ListView.GONE);
+			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), getLocalClassName()+":onResume - ", e);
 		}
@@ -555,6 +595,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 						public void onClick(View v){
 							try{
 								Popup popup = new Popup(MainActivity.this, name, personEmail, img);
+								popup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 								popup.show();
 							}catch(Exception e){
 								Utils.logError(WechainApp.getContext(), getLocalClassName()+":updateUI:onClick - ", e);

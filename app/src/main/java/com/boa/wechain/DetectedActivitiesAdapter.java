@@ -1,6 +1,7 @@
 package com.boa.wechain;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -40,7 +41,8 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity>{
 			if(detectedActivity != null){
 				activityName.setText(Utils.getActivityString(getContext(), detectedActivity.getType()));
 				activityConfidenceLevel.setText(getContext().getString(R.string.percent, detectedActivity.getConfidence()));
-				progressBar.setProgress(detectedActivity.getConfidence());
+				//Que se llene toda la barra cuando haya actividad o sea apartir del 15%
+				progressBar.setProgress(100);//detectedActivity.getConfidence());
 			}
 		}catch(Exception e){
 			Utils.logError(WechainApp.getContext(), "DetectedActivitiesAdapter:getView - ", e);
@@ -74,6 +76,12 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity>{
 					tempList.add(new DetectedActivity(Common.MONITORED_ACTIVITIES[i], confidence));
 					System.out.println(Utils.getActivityString(WechainApp.getContext(), Common.MONITORED_ACTIVITIES[i])+"("+Common.MONITORED_ACTIVITIES[i]+") "+confidence+"%");
 					//BICI es 1
+					
+					if(confidence > 15){
+						PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).edit().putBoolean("showBar", true).apply();
+					}else{
+						PreferenceManager.getDefaultSharedPreferences(WechainApp.getContext()).edit().putBoolean("showBar", false).apply();
+					}
 				}
 			}
 			

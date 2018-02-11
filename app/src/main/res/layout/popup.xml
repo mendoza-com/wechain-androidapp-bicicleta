@@ -1,63 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	android:id="@+id/rlPopup"
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:card_view="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/cardView"
+	android:layout_below="@+id/line"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="@color/white">
+	card_view:cardCornerRadius="20dp"
+	card_view:cardUseCompatPadding="false"
+	card_view:cardElevation="2dp"
+	card_view:cardBackgroundColor="@color/popup">
 	<RelativeLayout
-		android:id="@+id/rlUser"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@color/popup">
-		<de.hdodenhof.circleimageview.CircleImageView
-			android:id="@+id/ivUser"
-			android:layout_width="wrap_content"
+		android:id="@+id/rlPopup"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<RelativeLayout
+			android:id="@+id/rlUser"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:id="@+id/ivUser"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:layout_marginTop="20dp"
+				android:src="@drawable/ic_shortcut_person" />
+			<TextView
+				android:layout_marginTop="10dp"
+				android:layout_below="@+id/ivUser"
+				android:id="@+id/tvHello"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:textColor="@color/white"
+				android:textSize="16sp"
+				android:textStyle="bold"
+				android:text="¡HOLA PEPE!" />
+			<TextView
+				android:layout_below="@+id/tvHello"
+				android:id="@+id/tvEmail"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:textColor="@color/subtitle"
+				android:textSize="16sp"
+				android:textStyle="bold"
+				android:layout_marginBottom="10dp"
+				android:text="test@m.com" />
+		</RelativeLayout>
+		<RelativeLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:layout_marginTop="20dp"
-			android:src="@drawable/ic_shortcut_person" />
-		<TextView
-			android:layout_marginTop="10dp"
-			android:layout_below="@+id/ivUser"
-			android:id="@+id/tvHello"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:textColor="@color/white"
-			android:textSize="16sp"
-			android:textStyle="bold"
-			android:text="¡HOLA PEPE!" />
-		<TextView
-			android:layout_below="@+id/tvHello"
-			android:id="@+id/tvEmail"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:textColor="@color/subtitle"
-			android:textSize="16sp"
-			android:textStyle="bold"
-			android:layout_marginBottom="10dp"
-			android:text="test@m.com" />
+			android:background="@drawable/curve_shap"
+			android:layout_below="@+id/rlUser">
+			<Button
+				android:id="@+id/btnLogout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:text="CERRAR SESIÓN"
+				android:textColor="@color/black"
+				android:background="?android:attr/selectableItemBackground" />
+			<Button
+				android:id="@+id/btnWeb"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/btnLogout"
+				android:layout_marginTop="10dp"
+				android:text="IR A WECHAIN"
+				android:textColor="@color/black"
+				android:background="?android:attr/selectableItemBackground" />
+		</RelativeLayout>
 	</RelativeLayout>
-	<Button
-		android:id="@+id/btnLogout"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/rlUser"
-		android:layout_marginTop="10dp"
-		android:text="CERRAR SESIÓN"
-		android:textColor="@color/black"
-		android:background="?android:attr/selectableItemBackground"
-		android:shadowColor="@android:color/transparent" />
-	<Button
-		android:id="@+id/btnWeb"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/btnLogout"
-		android:layout_marginTop="10dp"
-		android:text="IR A WECHAIN"
-		android:textColor="@color/black"
-		android:background="?android:attr/selectableItemBackground"
-		android:shadowColor="@android:color/transparent" />
-</RelativeLayout>
+</android.support.v7.widget.CardView>
